@@ -77,7 +77,7 @@ or filter based on a colour with,
 acommands list -c blue
 ```
 
-> **The CLI is supposed to how the exact hex colours as you see in the Andronix app or web app but if your terminal doesn't support colours or supports very limited colours, the accuracy of the colours will take a hit.**
+> **The CLI is supposed to show the exact hex colours as you see in the Andronix app or web app but if your terminal doesn't support colours or supports very limited colours, the accuracy of the colours will take a hit.**
 
 You can use one out of these colours **[blue, black, red, green, orange, violet]**
 
