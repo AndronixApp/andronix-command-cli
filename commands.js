@@ -6,7 +6,6 @@ const chalk = require('chalk');
 
 let allColors = "blue, black, red, green, orange, violet"
 
-
 const {
     getCommands,
     addCommands,
@@ -24,17 +23,17 @@ const questions = [
     {
         type: 'input',
         name: "command",
-        message: "Command to upload"
+        message: "Enter the command..."
     },
     {
         type: 'input',
         name: "description",
-        message: "What does this command do?"
+        message: "Enter what does this command do..."
     },
     {
         type: 'list',
         name: "color",
-        message: "What color you want your command to be associated with?",
+        message: "What color you want your command to be associated with...",
         choices: ['Blue', 'Red', 'Green', 'Black', 'Violet', 'Orange'],
     }
 ]
@@ -54,7 +53,7 @@ program
 program
     .command('hello')
     .description('Nothing fancy...Just a sweet little hello! 🖐')
-    .action(() => {
+    .action(async () => {
         processingLog("Hello! Andronix Commands seems to be working okay.")
     })
 

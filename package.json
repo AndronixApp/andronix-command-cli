@@ -1,6 +1,6 @@
 {
   "name": "andronix-command-cli",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,9 +21,7 @@
     "commander": "^6.0.0",
     "firebase": "^7.19.0",
     "inquirer": "^7.3.3",
-    "open": "^7.2.0"
-  },
-  "devDependencies": {
-    "dotenv": "^8.2.0"
+    "open": "^7.2.0",
+    "update-notifier": "^4.1.1"
   }
 }

@@ -115,11 +115,6 @@ dist
 .yarn/unplugged
 .yarn/build-state.yml
 .pnp.*
-/.idea/
 
-.idea/.gitignore
-.idea/dictionaries/
-.idea/inspectionProfiles/
-.idea/jsLibraryMappings.xml
-.idea/misc.xml
-.idea/modules.xml
+/Scripts
+

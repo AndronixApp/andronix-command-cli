@@ -1,4 +1,3 @@
-require('dotenv').config()
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConf.json')
 // Initialize Firebase
@@ -13,11 +12,13 @@ const open = require('open');
 const axios = require('axios');
 const path = require("path");
 const {prompt} = require('inquirer')
-const {styleCommandLog, styleErrorLog} = require('./loggingModules/commandListLogging')
-const userJsonFilePath = path.resolve(__dirname, "./user.json")
-const hexCodes = require('./loggingModules/hexCodes.json');
+const {styleCommandLog, styleErrorLog} = require('./LoggingModules/commandListLogging')
+const userJsonFilePath = path.resolve(__dirname, "JsonModules", "JsonModules", "AppFiles", "user.json")
+const hexCodes = require('./LoggingModules/hexCodes.json');
+
 
 const getUserInfo = () => {
+
     try {
         signInIfUserExists().then(r => {
             successLog(chalk.green(`User Email -> ${auth.currentUser.email}`))
@@ -38,7 +39,7 @@ const logout = () => {
         successLog("Logged out!")
         //deleting the user record
         try {
-            fs.unlinkSync(path.resolve(__dirname, "./user.json"))
+            fs.unlinkSync(userJsonFilePath)
             stop()
             //file removed
         } catch (err) {
@@ -157,6 +158,7 @@ const addCommands = async (commandObj) => {
     }
 }
 const login = async () => {
+    runAll()
     try {
         processingLog("Opening the browser to login. If you can't use a browser on this device, please visit" +
             " https://cli-login.andronix.app manually.")
@@ -195,7 +197,7 @@ async function loginUser(token) {
             auth.signInWithCustomToken(token).then(user => {
                 const userJson = JSON.stringify(auth.currentUser.toJSON())
                 try {
-                    fs.writeFileSync(path.resolve(__dirname, "./user.json"), userJson)
+                    fs.writeFileSync(userJsonFilePath, userJson)
                 } catch (e) {
                     errorLog("Error logging in the user.")
                 }
@@ -203,10 +205,10 @@ async function loginUser(token) {
                 successLog(`Welcome ${auth.currentUser.email}`)
                 stop()
             }).catch(e => {
-                errorLog("Error logging in the user.")
+                errorLog("Error logging in the user." + e)
             })
         } catch (e) {
-            errorLog("Error logging in the user.")
+            errorLog("Error logging in the user." + e)
         }
     }
 }
@@ -254,6 +256,16 @@ const successLog = function successLog(s) {
 
 const processingLog = function processingLog(l) {
     console.log(chalk.yellow(l))
+}
+
+function updateNotifier() {
+    const updateNotifier = require('update-notifier');
+    const pkg = require('./package.json');
+    updateNotifier({pkg}).notify();
+}
+
+function runAll() {
+    updateNotifier()
 }
 
 
