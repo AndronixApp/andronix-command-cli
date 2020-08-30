@@ -28,7 +28,7 @@ pkg install -y curl && curl https://raw.githubusercontent.com/imprakharshukla/an
 
 #### 1. Install NodeJS
  1. **Windows** - You can follow this [tutorial written by NodeSource](https://nodesource.com/blog/installing-nodejs-tutorial-windows/)
- 2. **Linux or Mac** - You can use either [Node Version Manager (NVM)](https://github.com/nvm-sh/nvm#installing-and-updating) or use your default package manager (*Remember that this app needs NodeJS version more than 6*)
+ 2. **Linux or Mac** - You can use either [Node Version Manager (NVM)](https://github.com/nvm-sh/nvm#installing-and-updating) or use your default package manager (*Remember that this app needs NodeJS version greater than 6*)
 
 #### 2. Install Andronix Command CLI
 After you've installed NodeJS and verified that both Node and NPM are properly working, just run the command below.
@@ -77,7 +77,7 @@ or filter based on a colour with,
 acommands list -c blue
 ```
 
-> **The CLI is supposed to how the exact hex colours as you see in the Andronix app or web app but if your terminal doesn't support colours or supports very limited colours, the accuracy of the colours will take a hit.**
+> **The CLI is supposed to show the exact hex colours as you see in the Andronix app or web app but if your terminal doesn't support colours or supports very limited colours, the accuracy of the colours will take a hit.**
 
 You can use one out of these colours **[blue, black, red, green, orange, violet]**
 
