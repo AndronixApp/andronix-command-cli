@@ -9,11 +9,10 @@ const fs = require('fs');
 let allColors = "blue, black, red, green, orange, violet"
 const open = require('open');
 const axios = require('axios');
-const path = require("path");
 const {prompt} = require('inquirer')
 const {styleCommandLog, styleErrorLog} = require('./LoggingModules/commandListLogging')
-const userJsonFilePath = path.resolve(__dirname, "JsonModules", "JsonModules", "AppFiles", "user.json")
-const configJsonFilePath = path.resolve(__dirname, "JsonModules", "JsonModules", "AppFiles", "config.json")
+const userJsonFilePath = "./conf/user.json"
+const configJsonFilePath = "./conf/config.json"
 const hexCodes = require('./LoggingModules/hexCodes.json');
 
 
@@ -144,7 +143,6 @@ const getCommands = (color) => {
 const addCommands = async (commandObj) => {
     try {
         let isLoginValid = await checkIfLoginValid()
-        console.log({isLoginValid})
         if (isLoginValid) {
             let uid = auth.currentUser.uid
             if (isObjFilled(commandObj)) {
@@ -193,6 +191,28 @@ const login = async () => {
     }
 }
 
+async function checkDirectory() {
+    let mkdirp = require('mkdirp');
+    return new Promise((resolve, reject) => {
+        let configDirectory = "./conf"
+        try {
+            if (fs.existsSync(configDirectory)) {
+                resolve(true)
+            } else {
+                mkdirp(configDirectory).then(r => {
+                    resolve(true)
+                }).catch(e => {
+                    console.error(e)
+                    reject(false)
+                })
+            }
+        } catch (err) {
+            console.error(err)
+            reject(false)
+        }
+    })
+}
+
 async function loginUser(token) {
     let tokenPassed = token.toString()
     if (!tokenPassed) {
@@ -205,23 +225,27 @@ async function loginUser(token) {
                 }
             })
             let token = res.data.token
-            auth.signInWithCustomToken(token).then(user => {
+            auth.signInWithCustomToken(token).then(async user => {
                 const userJson = JSON.stringify(auth.currentUser.toJSON())
                 try {
+                    await checkDirectory()
                     fs.writeFileSync(userJsonFilePath, userJson)
+                    successLog("User logged in")
+                    successLog(`Welcome ${auth.currentUser.email}`)
+                    let currentTime = new Date().valueOf().toString()
+                    await writeToConfig("loginTime", currentTime)
+                    stop()
                 } catch (e) {
-                    errorLog("Error logging in the user.")
+                    errorLog(`Error logging in the user. ${e}`)
+                    stop()
                 }
-                successLog("User logged in")
-                successLog(`Welcome ${auth.currentUser.email}`)
-                let currentTime = new Date().valueOf().toString()
-                writeToConfig("loginTime", currentTime)
-                stop()
             }).catch(e => {
-                errorLog("Error logging in the user." + e)
+                errorLog(`Error logging in the user. ${e}`)
+                stop()
             })
         } catch (e) {
-            errorLog("Error logging in the user." + e)
+            errorLog(`Error logging in the user. ${e}`)
+            stop()
         }
     }
 }
@@ -281,13 +305,19 @@ const checkIfLoginValid = async function checkIfLoginValid() {
     )
 }
 
-function writeToConfig(key, value) {
+async function writeToConfig(key, value) {
     let dataToWrite = JSON.stringify({[key]: value})
-    fs.writeFileSync(configJsonFilePath, dataToWrite);
+    try {
+        await checkDirectory()
+        fs.writeFileSync(configJsonFilePath, dataToWrite);
+    } catch (e) {
+        errorLog(e)
+    }
 }
 
 const errorLog = function errorLog(e) {
     console.log(chalk.red(e))
+
 }
 
 const successLog = function successLog(s) {
@@ -310,6 +340,7 @@ function runAll() {
 
 
 function stop() {
+    process.exit(-1);
     process.exit(-1);
 }
 
