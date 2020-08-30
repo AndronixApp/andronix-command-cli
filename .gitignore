@@ -123,3 +123,5 @@ dist
 .idea/jsLibraryMappings.xml
 .idea/misc.xml
 .idea/modules.xml
+
+JsonModules/

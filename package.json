@@ -1,6 +1,6 @@
 {
   "name": "andronix-command-cli",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,10 @@
   },
   "bin": {
     "acommands": "./commands.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imprakharshukla/andronix-command-cli/tree/master"
   },
   "keywords": [],
   "engines": {

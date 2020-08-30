@@ -2,7 +2,7 @@
 
 const program = require('commander')
 const {prompt} = require('inquirer')
-const chalk = require('chalk');
+const packageJson = require('./package.json');
 
 let allColors = "blue, black, red, green, orange, violet"
 
@@ -16,7 +16,8 @@ const {
     successLog,
     errorLog,
     processingLog,
-    login
+    login,
+    checkIfLoginValid
 } = require('./app')
 
 const questions = [
@@ -37,6 +38,11 @@ const questions = [
         choices: ['Blue', 'Red', 'Green', 'Black', 'Violet', 'Orange'],
     }
 ]
+const removeQuestion = {
+    name: 'docID',
+    type: 'input',
+    message: 'Please enter the ID of the command you want to delete.',
+}
 
 program
     .command('login')
@@ -58,29 +64,22 @@ program
     })
 
 program
-    .version('1.0.0')
+    .version(packageJson.version)
     .description('Andronix Commands CLI')
 
 program
     .command('remove')
     .alias('r')
     .description("Remove a command")
-    .action(() => {
+    .action(async () => {
         try {
-            signInIfUserExists().then(r => {
-                prompt({
-                    name: 'docID',
-                    type: 'input',
-                    message: 'Please enter the ID of the command you want to delete.',
-                }).then(docID => removeCommands(docID))
-            }).catch(e => {
-                errorLog(e)
-            })
-
+            await signInIfUserExists()
+            let isLoginValid = await checkIfLoginValid()
+            if (isLoginValid)
+                prompt(removeQuestion).then(docID => removeCommands(docID))
         } catch (e) {
-            errorLog("Please login in before adding commands with 'acommands login'.")
+            errorLog("Please login in before listing commands with 'acommands login'.")
         }
-
     })
 
 program
@@ -90,13 +89,12 @@ program
     .description(`Get all the commands or filter with -c [${allColors}]`)
     .action(async (args) => {
         try {
-            signInIfUserExists().then(r => {
+            await signInIfUserExists()
+            let isLoginValid = await checkIfLoginValid()
+            if (isLoginValid)
                 getCommands(args.color)
-            }).catch(e => {
-                errorLog(e)
-            })
         } catch (e) {
-            errorLog("Please login in before adding commands with 'andronix-cli login'.")
+            errorLog("Please login in before listing commands with 'acommands login'.")
         }
     })
 
@@ -105,16 +103,14 @@ program
     .command('add')
     .alias('a')
     .description('Add commands')
-    .action(() => {
+    .action(async () => {
         try {
-            signInIfUserExists().then(r => {
+            await signInIfUserExists()
+            let isLoginValid = await checkIfLoginValid()
+            if (isLoginValid)
                 prompt(questions).then(answers => addCommands(answers))
-            }).catch(e => {
-                errorLog(e)
-            })
-
         } catch (e) {
-            errorLog("Please login in before adding commands with 'acommands login'.")
+            errorLog("Please login in before listing commands with 'acommands login'.")
         }
     })
 

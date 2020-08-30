@@ -7,13 +7,13 @@ const auth = firebase.auth()
 const chalk = require('chalk');
 const fs = require('fs');
 let allColors = "blue, black, red, green, orange, violet"
-
 const open = require('open');
 const axios = require('axios');
 const path = require("path");
 const {prompt} = require('inquirer')
 const {styleCommandLog, styleErrorLog} = require('./LoggingModules/commandListLogging')
 const userJsonFilePath = path.resolve(__dirname, "JsonModules", "JsonModules", "AppFiles", "user.json")
+const configJsonFilePath = path.resolve(__dirname, "JsonModules", "JsonModules", "AppFiles", "config.json")
 const hexCodes = require('./LoggingModules/hexCodes.json');
 
 
@@ -29,14 +29,17 @@ const getUserInfo = () => {
         })
 
     } catch (e) {
-        errorLog("Please login in before adding commands with 'andronix-cli login'.")
+        errorLog("Please login in before adding commands with 'acommands login'.")
     }
 
 }
 
-const logout = () => {
+const logout = (forced) => {
     auth.signOut().then(() => {
-        successLog("Logged out!")
+        if (!forced)
+            successLog("Logged out!")
+        else
+            errorLog("Login has expired. Please login again with 'acommands login' to continue.")
         //deleting the user record
         try {
             fs.unlinkSync(userJsonFilePath)
@@ -139,22 +142,30 @@ const getCommands = (color) => {
 }
 
 const addCommands = async (commandObj) => {
-    let uid = auth.currentUser.uid
-    if (isObjFilled(commandObj)) {
-        try {
-            let docReference = await firestore.collection("users").doc(uid).collection("commands").add({
-                com: commandObj.command.toString(),
-                dis: commandObj.description.toString(),
-                color: hexCodes[(commandObj.color).toString().toLowerCase()]
-            })
-            successLog(`Command Added ${docReference.id}`)
-            stop()
-        } catch (e) {
-            errorLog("Error adding command!")
+    try {
+        let isLoginValid = await checkIfLoginValid()
+        console.log({isLoginValid})
+        if (isLoginValid) {
+            let uid = auth.currentUser.uid
+            if (isObjFilled(commandObj)) {
+                try {
+                    let docReference = await firestore.collection("users").doc(uid).collection("commands").add({
+                        com: commandObj.command.toString(),
+                        dis: commandObj.description.toString(),
+                        color: hexCodes[(commandObj.color).toString().toLowerCase()]
+                    })
+                    successLog(`Command Added ${docReference.id}`)
+                    stop()
+                } catch (e) {
+                    errorLog("Error adding command!")
+                }
+            } else {
+                errorLog("Please provide all the values i.e a command, a description and a color of your choice.")
+                stop()
+            }
         }
-    } else {
-        errorLog("Please provide all the values i.e a command, a description and a color of your choice.")
-        stop()
+    } catch (e) {
+        errorLog(e)
     }
 }
 const login = async () => {
@@ -203,6 +214,8 @@ async function loginUser(token) {
                 }
                 successLog("User logged in")
                 successLog(`Welcome ${auth.currentUser.email}`)
+                let currentTime = new Date().valueOf().toString()
+                writeToConfig("loginTime", currentTime)
                 stop()
             }).catch(e => {
                 errorLog("Error logging in the user." + e)
@@ -246,6 +259,33 @@ function isObjFilled(object) {
 
 }
 
+const checkIfLoginValid = async function checkIfLoginValid() {
+    return new Promise(async (resolve, reject) => {
+            fs.readFile(configJsonFilePath, async (err, data) => {
+                if (err) {
+                    errorLog("Error reading the login config.")
+                    reject(false)
+                }
+                let dataFromFile = JSON.parse(data.toString());
+                let loginTime = dataFromFile.loginTime;
+                let currentTime = new Date().valueOf()
+                //4 days
+                if (currentTime - loginTime >= 345600000) {
+                    logout(true)
+                    reject(false)
+                } else {
+                    resolve(true)
+                }
+            });
+        }
+    )
+}
+
+function writeToConfig(key, value) {
+    let dataToWrite = JSON.stringify({[key]: value})
+    fs.writeFileSync(configJsonFilePath, dataToWrite);
+}
+
 const errorLog = function errorLog(e) {
     console.log(chalk.red(e))
 }
@@ -283,5 +323,6 @@ module.exports = {
     signInIfUserExists,
     errorLog,
     successLog,
-    processingLog
+    processingLog,
+    checkIfLoginValid
 }

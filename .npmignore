@@ -117,4 +117,5 @@ dist
 .pnp.*
 
 /Scripts
+/JsonModules
 
