@@ -20,7 +20,7 @@ Since this CLI is made with NodeJS, you will need NodeJS and NPM installed on yo
  If you're on Termux, just copy and paste the command given below. This will install everything you need including Andronix Command CLI itself.
 
 ``` 
-pkg install -y curl && curl https://raw.githubusercontent.com/imprakharshukla/andronix-command-cli/master/Scripts/termux-install.sh > install_andronix_cli.sh && chmod +x install_andronix_cli.sh && bash install_andronix_cli.sh
+pkg install -y curl && curl https://raw.githubusercontent.com/AndronixApp/andronix-command-cli/master/Scripts/termux-install.sh > install_andronix_cli.sh && chmod +x install_andronix_cli.sh && bash install_andronix_cli.sh
 ```
 
 ### Windows or Mac
