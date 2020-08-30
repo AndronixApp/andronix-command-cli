@@ -9,13 +9,12 @@
   <a href="https://play.google.com/store/apps/details?id=studio.com.techriz.andronix"><img src="https://img.shields.io/badge/Download-Google%20Play-orange?style=flat-square&logo=google-play"></a>
   <a href="https://github.com/AndronixApp/AndronixOrigin/releases"><img src="https://img.shields.io/badge/Download-GitHub%20Releases-orange?style=flat-square&logo=github"></a>
 
-<br>
 <h1 align="center">Andronix Commands | CLI 🔥</h1>
-<br>
-Andronix Commands CLI makes it easy for you to access Andronix Commands on your machines, be it **Linux, Windows, Mac, Termux or even a remote machine you're SSHing into** . It's easy to install and realtime.
+
+Andronix Commands CLI makes it easy for you to access Andronix Commands on your machines, be it **Linux, Windows, Mac, Termux or even a remote machine you're SSHing into**. It's easy to install and realtime.
 
 ## Installation
-Since this CLI is made with NodeJS and since you will need NodeJS and NPM installed on your machine.
+Since this CLI is made with NodeJS, you will need NodeJS and NPM installed on your machine.
 
 ### Termux
  If you're on Termux, just copy and paste the command given below. This will install everything you need including Andronix Command CLI itself.
